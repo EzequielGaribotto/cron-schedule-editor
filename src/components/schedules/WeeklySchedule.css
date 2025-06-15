@@ -1,0 +1,11 @@
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.time-restriction {
+    margin-top: 10px;
+    margin-left: 20px;
+}

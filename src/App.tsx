@@ -1,35 +1,39 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import { ScheduleEditor } from './components/editor/ScheduleEditor';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [cronExpression, setCronExpression] = useState('*/5 * * * *');
+  const [error, setError] = useState('');
+
+  // Handle cron expression change
+  const handleCronChange = (cron: string | string[]) => {
+    try {
+      // Handle both string and array return types
+      const formattedCron = Array.isArray(cron) ? cron.join('\n') : cron;
+      setCronExpression(formattedCron);
+      setError('');
+    } catch (err) {
+      setError('Error generating CRON expression: ' + (err as Error).message);
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="app-container">
+      <h1>Cron Schedule Editor</h1>
+
+      <ScheduleEditor onCronChange={handleCronChange} />
+
+      <textarea
+        className="cron-expression"
+        value={cronExpression}
+        onChange={(e) => setCronExpression(e.target.value)}
+        placeholder="CRON expression (e.g., */5 * * * *)"
+      />
+
+      {error && <div className="error-message">{error}</div>}
+    </div>
+  );
 }
 
-export default App
+export default App;

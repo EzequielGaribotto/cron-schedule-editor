@@ -1,0 +1,29 @@
+.time-selector {
+    display: flex;
+    flex-direction: column;
+}
+
+.time-input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.time-input-container input[type="time"] {
+    width: auto;
+    min-width: 120px;
+    background-color: transparent;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 16px;
+}
+
+.remove-time-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #e53935;
+    padding: 5px;
+    font-size: 16px;
+}

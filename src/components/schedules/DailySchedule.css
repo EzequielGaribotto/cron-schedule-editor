@@ -1,0 +1,15 @@
+.time-inputs {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    width: fit-content;
+}
+
+.add-time-btn {
+    margin-top: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+}

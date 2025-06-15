@@ -1,0 +1,37 @@
+.schedule-editor {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px
+}
+
+.schedule-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #eee
+}
+
+.schedule-tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-size: 16px;
+    font-weight: 500;
+    color: #666;
+}
+
+.schedule-tab.active {
+    color: #2c7ae0;
+    border-bottom: 2px solid #2c7ae0
+}
+
+.schedule-tab:hover:not(.active) {
+    color: #555;
+    background-color: #f9f9f9
+}
+
+.schedule-content {
+    padding: 15px 10px
+}
