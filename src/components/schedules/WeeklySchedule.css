@@ -9,3 +9,15 @@
     margin-top: 10px;
     margin-left: 20px;
 }
+
+.label-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.validation-warning {
+    color: #e53935;
+    font-size: 14px;
+    font-weight: normal;
+}

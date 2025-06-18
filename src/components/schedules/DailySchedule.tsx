@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { TimeSelector } from '../common/TimeSelector';
 import './DailySchedule.css';
+import { cleanNumericValue } from '../../utils/cronParser';
 
 export interface DailyScheduleConfig {
   dailyTimes: string[];
@@ -13,7 +14,6 @@ interface DailyScheduleProps {
 }
 
 export function DailySchedule({ config, onChange, onCronChange }: DailyScheduleProps) {
-  // Convert to cron expression and notify parent
   useEffect(() => {
     const cron = generateCronExpression(config.dailyTimes);
     onCronChange(cron);
@@ -58,20 +58,22 @@ export function DailySchedule({ config, onChange, onCronChange }: DailyScheduleP
   );
 }
 
-// Generate cron expression from config
 export function generateCronExpression(dailyTimes: string[]): string | string[] {
   if (!dailyTimes || dailyTimes.length === 0) {
-    return '0 0 * * *'; // Default to midnight
+    return '0 0 * * *';
   }
 
   if (dailyTimes.length === 1) {
     const [hours, minutes] = dailyTimes[0].split(':');
-    return `${minutes} ${hours} * * *`;
+    return `${cleanNumericValue(minutes)} ${cleanNumericValue(hours)} * * *`;
   }
 
   const times = dailyTimes.map(time => {
     const [hours, minutes] = time.split(':');
-    return { hours, minutes };
+    return {
+      hours: cleanNumericValue(hours),
+      minutes: cleanNumericValue(minutes)
+    };
   });
 
   const hourGroups = new Map<string, Set<string>>();

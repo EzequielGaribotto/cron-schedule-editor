@@ -18,6 +18,13 @@ export function MinutesSchedule({ config, onChange, onCronChange }: MinutesSched
     onCronChange(cron);
   }, [config, onCronChange]);
 
+  const handleMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value) || 1;
+    // Ensure value is between 1 and 59
+    const validValue = Math.min(59, Math.max(1, value));
+    onChange({ minutes: validValue });
+  };
+
   return (
     <div>
       <div className="form-group">
@@ -29,7 +36,7 @@ export function MinutesSchedule({ config, onChange, onCronChange }: MinutesSched
             min="1"
             max="59"
             value={config.minutes}
-            onChange={(e) => onChange({ minutes: Math.max(1, parseInt(e.target.value) || 1) })}
+            onChange={handleMinutesChange}
           />
           <span style={{ marginLeft: '10px' }}>minutes</span>
         </div>
@@ -40,5 +47,7 @@ export function MinutesSchedule({ config, onChange, onCronChange }: MinutesSched
 
 // Generate cron expression from config
 export function generateCronExpression(config: MinutesScheduleConfig): string {
-  return `*/${config.minutes} * * * *`;
+  // Ensure minutes is valid before generating expression
+  const validMinutes = Math.min(59, Math.max(1, config.minutes));
+  return `*/${validMinutes} * * * *`;
 }
