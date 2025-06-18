@@ -15,12 +15,25 @@ interface DailyScheduleProps {
 
 export function DailySchedule({ config, onChange, onCronChange }: DailyScheduleProps) {
   useEffect(() => {
+    // Ensure we never have more than 2 times
+    if (config.dailyTimes.length > 2) {
+      onChange({
+        ...config,
+        dailyTimes: config.dailyTimes.slice(0, 2)
+      });
+      return;
+    }
+    
+    // Generate cron expression
     const cron = generateCronExpression(config.dailyTimes);
     onCronChange(cron);
-  }, [config, onCronChange]);
+  }, [config, onChange, onCronChange]);
 
-  const addTime = () => {
-    onChange({ ...config, dailyTimes: [...config.dailyTimes, '12:00'] });
+  const addSecondTime = () => {
+    onChange({
+      ...config,
+      dailyTimes: [...config.dailyTimes, '18:00']
+    });
   };
 
   const updateTime = (index: number, value: string) => {
@@ -29,30 +42,53 @@ export function DailySchedule({ config, onChange, onCronChange }: DailyScheduleP
     onChange({ ...config, dailyTimes: newTimes });
   };
 
-  const removeTime = (index: number) => {
-    const newTimes = config.dailyTimes.filter((_, i) => i !== index);
-    onChange({ ...config, dailyTimes: newTimes });
+  const removeSecondTime = () => {
+    onChange({
+      ...config,
+      dailyTimes: [config.dailyTimes[0]]
+    });
   };
+
+  // Get first and second time values
+  const firstTime = config.dailyTimes[0] || '09:00';
+  const hasSecondTime = config.dailyTimes.length > 1;
 
   return (
     <div>
       <div className="form-group">
         <label>Times to run each day</label>
-        {config.dailyTimes.map((time, index) => (
-          <div key={index} className="time-inputs">
+        <div className="time-inputs-container">
+          <div className="time-inputs">
+            <span className="time-label">First time:</span>
             <TimeSelector
-              value={time}
-              onChange={(value) => updateTime(index, value)}
-              showRemoveButton={config.dailyTimes.length > 1}
-              onRemove={() => removeTime(index)}
+              value={firstTime}
+              onChange={(value) => updateTime(0, value)}
               step="60"
             />
           </div>
-        ))}
 
-        <button type="button" className="add-time-btn" onClick={addTime}>
-          + Add another time
-        </button>
+          {hasSecondTime ? (
+            <div className="time-inputs">
+              <span className="time-label">Second time:</span>
+              <TimeSelector
+                value={config.dailyTimes[1]}
+                onChange={(value) => updateTime(1, value)}
+                showRemoveButton={true}
+                onRemove={removeSecondTime}
+                step="60"
+              />
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="add-time-btn"
+              onClick={addSecondTime}
+              aria-label="Add second time"
+            >
+              + Add second time
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -60,7 +96,7 @@ export function DailySchedule({ config, onChange, onCronChange }: DailyScheduleP
 
 export function generateCronExpression(dailyTimes: string[]): string | string[] {
   if (!dailyTimes || dailyTimes.length === 0) {
-    return '0 0 * * *';
+    return '0 0 * * *';  // Default to midnight
   }
 
   if (dailyTimes.length === 1) {
@@ -68,41 +104,9 @@ export function generateCronExpression(dailyTimes: string[]): string | string[] 
     return `${cleanNumericValue(minutes)} ${cleanNumericValue(hours)} * * *`;
   }
 
-  const times = dailyTimes.map(time => {
+  // For exactly 2 times, just return the two expressions directly
+  return dailyTimes.map(time => {
     const [hours, minutes] = time.split(':');
-    return {
-      hours: cleanNumericValue(hours),
-      minutes: cleanNumericValue(minutes)
-    };
+    return `${cleanNumericValue(minutes)} ${cleanNumericValue(hours)} * * *`;
   });
-
-  const hourGroups = new Map<string, Set<string>>();
-  times.forEach(time => {
-    if (!hourGroups.has(time.hours)) {
-      hourGroups.set(time.hours, new Set());
-    }
-    hourGroups.get(time.hours)!.add(time.minutes);
-  });
-
-  const minuteGroups = new Map<string, Set<string>>();
-  times.forEach(time => {
-    if (!minuteGroups.has(time.minutes)) {
-      minuteGroups.set(time.minutes, new Set());
-    }
-    minuteGroups.get(time.minutes)!.add(time.hours);
-  });
-
-  const hourExpressions = Array.from(hourGroups.entries()).map(
-    ([hour, minutes]) => `${Array.from(minutes).join(',')} ${hour} * * *`
-  );
-
-  const minuteExpressions = Array.from(minuteGroups.entries()).map(
-    ([minute, hours]) => `${minute} ${Array.from(hours).join(',')} * * *`
-  );
-
-  if (hourExpressions.length <= minuteExpressions.length) {
-    return hourExpressions.length === 1 ? hourExpressions[0] : hourExpressions;
-  } else {
-    return minuteExpressions.length === 1 ? minuteExpressions[0] : minuteExpressions;
-  }
 }

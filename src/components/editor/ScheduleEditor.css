@@ -9,7 +9,9 @@
 .schedule-tabs {
     display: flex;
     margin-bottom: 20px;
-    border-bottom: 2px solid #eee
+    border-bottom: 2px solid #eee;
+    overflow-x: auto;
+    scrollbar-width: thin;
 }
 
 .schedule-tab {
@@ -20,6 +22,9 @@
     font-size: 16px;
     font-weight: 500;
     color: #666;
+    white-space: nowrap;
+    position: relative;
+    transition: color 0.2s;
 }
 
 .schedule-tab.active {
@@ -32,6 +37,24 @@
     background-color: #f9f9f9
 }
 
+.schedule-tab:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(44, 122, 224, 0.4);
+    border-radius: 4px 4px 0 0;
+}
+
 .schedule-content {
     padding: 15px 10px
+}
+
+@media (max-width: 600px) {
+    .schedule-tabs {
+        flex-wrap: wrap;
+    }
+    
+    .schedule-tab {
+        flex: 1 1 auto;
+        text-align: center;
+        min-width: 40%;
+    }
 }

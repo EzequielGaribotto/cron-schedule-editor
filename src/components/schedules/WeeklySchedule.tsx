@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { TimeSelector } from '../common/TimeSelector';
 import { SelectorGrid } from '../common/SelectorGrid';
+import { ValidationMessage } from '../common/ValidationMessage';
 import './WeeklySchedule.css';
 import { cleanNumericValue, formatWeekdays } from '../../utils/cronParser';
 
@@ -74,12 +75,11 @@ export function WeeklySchedule({ config, onChange, onCronChange }: WeeklySchedul
       </div>
 
       <div className="form-group">
-        <div className="label-container">
-          <label>Days of week</label>
-          {showWarning && (
-            <span className="validation-warning">At least one day must be selected</span>
-          )}
-        </div>
+        <label>Days of week</label>
+        <ValidationMessage 
+          message="At least one day must be selected" 
+          visible={showWarning} 
+        />
         <SelectorGrid
           items={dayItems}
           selectedValues={selectedDays}

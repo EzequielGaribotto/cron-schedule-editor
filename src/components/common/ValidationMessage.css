@@ -1,0 +1,23 @@
+.validation-message {
+    margin-top: 5px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.validation-message.error {
+    color: #e53935;
+}
+
+.validation-message.warning {
+    color: #f57c00;
+}
+
+.validation-message.info {
+    color: #1976d2;
+}
+
+.validation-icon {
+    font-size: 16px;
+}

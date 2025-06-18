@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { TimeSelector } from '../common/TimeSelector';
 import { SelectorGrid } from '../common/SelectorGrid';
+import { ValidationMessage } from '../common/ValidationMessage';
 import './MonthlySchedule.css';
 import { cleanNumericValue, convertToRanges, formatMonths } from '../../utils/cronParser';
 
@@ -112,12 +113,11 @@ export function MonthlySchedule({ config, onChange, onCronChange }: MonthlySched
       </div>
 
       <div className="form-group">
-        <div className="label-container">
-          <label>Days of month</label>
-          {showDayWarning && (
-            <span className="validation-warning">At least one day must be selected</span>
-          )}
-        </div>
+        <label>Days of month</label>
+        <ValidationMessage 
+          message="At least one day must be selected" 
+          visible={showDayWarning} 
+        />
         <SelectorGrid
           items={dayItems}
           selectedValues={monthlyDays}
@@ -127,12 +127,11 @@ export function MonthlySchedule({ config, onChange, onCronChange }: MonthlySched
       </div>
 
       <div className="form-group">
-        <div className="label-container">
-          <label>Months</label>
-          {showMonthWarning && (
-            <span className="validation-warning">At least one month must be selected</span>
-          )}
-        </div>
+        <label>Months</label>
+        <ValidationMessage 
+          message="At least one month must be selected" 
+          visible={showMonthWarning} 
+        />
         <SelectorGrid
           items={monthItems}
           selectedValues={monthlyMonths}
